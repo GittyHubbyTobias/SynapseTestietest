@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "01f1168e-181b-462f-95b3-7afc02aa6915"
+				"spark.autotune.trackingId": "e00c1c50-e283-42a5-a46d-e0fbf151c115"
 			}
 		},
 		"metadata": {
@@ -87,9 +87,175 @@
 			{
 				"cell_type": "code",
 				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
 					"type(a)"
 				],
 				"execution_count": 82
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"db = \"default\"\n",
+					"\n",
+					"for r in spark.sql(f\"SHOW TABLES IN `{db}`\").select(\"tableName\").collect():\n",
+					"    t = r[\"tableName\"]\n",
+					"    display(spark.sql(f\"DESCRIBE `{db}`.`{t}`\"))\n",
+					""
+				],
+				"execution_count": 110
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"display(spark.catalog.)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"import pandas as pd\n",
+					"\n",
+					"db = \"default\"\n",
+					"result = []\n",
+					"\n",
+					"for t in spark.catalog.listTables(db):\n",
+					"    table = t.name\n",
+					"    cols = spark.catalog.listColumns(f\"{db}.{table}\")\n",
+					"\n",
+					"    for c in cols:\n",
+					"        result.append({\n",
+					"            \"table\": table,\n",
+					"            \"column\": c.name,\n",
+					"            \"data_type\": c.dataType\n",
+					"        })\n",
+					"\n",
+					"df = spark.createDataFrame(result)\n",
+					"display(df)\n",
+					""
+				],
+				"execution_count": 113
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"db = \"default\"\n",
+					"\n",
+					"df = spark.sql(f\"\"\"\n",
+					"SELECT\n",
+					"  table_schema,\n",
+					"  table_name,\n",
+					"  ordinal_position,\n",
+					"  column_name,\n",
+					"  data_type\n",
+					"FROM system.information_schema.columns\n",
+					"WHERE table_schema = '{db}'\n",
+					"ORDER BY table_name, ordinal_position\n",
+					"\"\"\")\n",
+					"\n",
+					"display(df)\n",
+					""
+				],
+				"execution_count": 112
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"\n",
+					"for item in spark.sql(\"show tables in default\").collect():\n",
+					"    tabelnaam = (item[\"tableName\"])\n",
+					"    beschrijving = spark.sql(f\"describe default.{tabelnaam}\")\n",
+					"    display(beschrijving)"
+				],
+				"execution_count": 111
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"lijst = spark.sql(\"show tables in default\").collect()\n",
+					"\n",
+					"for item in lijst:\n",
+					"    tabelnaam = (item[\"tableName\"])\n",
+					"    beschrijving = spark.sql(f\"describe default.{tabelnaam}\")\n",
+					"    display(beschrijving)\n",
+					""
+				],
+				"execution_count": 108
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"df = spark.sql(\"show tables in default\")\n",
+					"lijst = df.select(\"tableName\").collect()\n",
+					"\n",
+					"for item in lijst:\n",
+					"    tabel = (item[\"tableName\"])\n",
+					"    beschrijving = spark.sql(f\"describe default.{tabel}\")\n",
+					"    display(beschrijving)\n",
+					""
+				],
+				"execution_count": 102
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"for item in lijst:\n",
+					"    print(item[\"tableName\"])"
+				],
+				"execution_count": 97
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"print(lijst)"
+				],
+				"execution_count": 95
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"type(lijst)"
+				],
+				"execution_count": 91
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"lijst = df.select(\"tableName\").collect()\n",
+					"display(lijst)"
+				],
+				"execution_count": 90
 			},
 			{
 				"cell_type": "code",
@@ -99,7 +265,7 @@
 				"source": [
 					"display(df.select(\"tableName\"))"
 				],
-				"execution_count": 83
+				"execution_count": 88
 			},
 			{
 				"cell_type": "code",
