@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "548d6d00-376b-4f57-8a3d-5df82cc749dc"
+				"spark.autotune.trackingId": "01f1168e-181b-462f-95b3-7afc02aa6915"
 			}
 		},
 		"metadata": {
@@ -65,7 +65,7 @@
 					"df2 = df.tableName.values\n",
 					"display(df2)"
 				],
-				"execution_count": 76
+				"execution_count": 78
 			},
 			{
 				"cell_type": "code",
@@ -73,6 +73,40 @@
 					""
 				],
 				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"display(df.select(\"tableName\")[0])"
+				],
+				"execution_count": 87
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"type(a)"
+				],
+				"execution_count": 82
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"display(df.select(\"tableName\"))"
+				],
+				"execution_count": 83
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"type(df)"
+				],
+				"execution_count": 79
 			},
 			{
 				"cell_type": "code",
@@ -90,7 +124,7 @@
 					"df = spark.sql(\"show tables in default\")\n",
 					"display(df)"
 				],
-				"execution_count": null
+				"execution_count": 77
 			},
 			{
 				"cell_type": "code",
