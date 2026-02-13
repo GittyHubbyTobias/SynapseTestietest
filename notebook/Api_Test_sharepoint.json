@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "dd9b45cb-27b6-425c-bdfe-02456edefb8b"
+				"spark.autotune.trackingId": "b56f89dc-1a00-4f67-a151-70e0db465909"
 			}
 		},
 		"metadata": {
@@ -51,6 +51,48 @@
 			{
 				"cell_type": "code",
 				"source": [
+					"# Maakt gebruik van Microsoft Grap API\n",
+					"# (De centrale plaats voor Api's voor Microsfot 365 spul)\n",
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import requests\n",
+					"\n",
+					"url = \"http://169.254.169.254/metadata/identity/oauth2/token\"\n",
+					"params = {\n",
+					"    \"api-version\": \"2018-02-01\",\n",
+					"    \"resource\": \"https://graph.microsoft.com/\"\n",
+					"}\n",
+					"\n",
+					"headers = {\"Metadata\": \"true\"}\n",
+					"\n",
+					"response = requests.get(url, params=params, headers=headers)\n",
+					"token = response.json()[\"access_token\"]\n",
+					"\n",
+					"print(token[:50], \"...\")\n",
+					""
+				],
+				"execution_count": 114
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import requests\n",
+					"\n",
+					"graph_url = \"https://graph.microsoft.com/v1.0/me/drive/root/children\"\n",
+					"\n",
+					"headers = {\n",
+					"    \"Authorization\": f\"Bearer {token}\"\n",
+					"}\n",
+					"\n",
+					"r = requests.get(graph_url, headers=headers)\n",
+					"\n",
+					"print(r.status_code)\n",
+					"print(r.json())\n",
 					""
 				],
 				"execution_count": null
