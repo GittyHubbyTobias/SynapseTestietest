@@ -4,7 +4,7 @@
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
-			"referenceName": "Spark1",
+			"referenceName": "Spark2",
 			"type": "BigDataPoolReference"
 		},
 		"sessionProperties": {
@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "af6abeac-4ef8-43a5-a6fc-3d04a7809e3e"
+				"spark.autotune.trackingId": "aba66757-4df7-4988-85cb-ad78b38ef2c1"
 			}
 		},
 		"metadata": {
@@ -31,15 +31,15 @@
 				"name": "python"
 			},
 			"a365ComputeOptions": {
-				"id": "/subscriptions/d57826de-518b-4620-8705-a5dc91cfcd00/resourceGroups/YP_Tobias_Boeije_RG/providers/Microsoft.Synapse/workspaces/synapseworkspacetestietest/bigDataPools/Spark1",
-				"name": "Spark1",
+				"id": "/subscriptions/d57826de-518b-4620-8705-a5dc91cfcd00/resourceGroups/YP_Tobias_Boeije_RG/providers/Microsoft.Synapse/workspaces/synapseworkspacetestietest/bigDataPools/Spark2",
+				"name": "Spark2",
 				"type": "Spark",
-				"endpoint": "https://synapseworkspacetestietest.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/Spark1",
+				"endpoint": "https://synapseworkspacetestietest.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/Spark2",
 				"auth": {
 					"type": "AAD",
 					"authResource": "https://dev.azuresynapse.net"
 				},
-				"sparkVersion": "3.4",
+				"sparkVersion": "3.5",
 				"nodeCount": 10,
 				"cores": 4,
 				"memory": 28,
@@ -48,6 +48,92 @@
 			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"help(requests.api)"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"help(requests)"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import requests\n",
+					"from pyspark.sql import functions as F\n",
+					"\n",
+					"url = \"https://dog.ceo/api/breeds/list/all\"\n",
+					"resp = requests.get(url, timeout=30)\n",
+					"resp.raise_for_status()\n",
+					"\n",
+					"json_text = resp.text  # string met JSON\n",
+					"\n",
+					"df = spark.read.json(spark.sparkContext.parallelize([json_text]))\n",
+					"df.show(truncate=False)\n",
+					""
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from pyspark.sql import functions as F\n",
+					"\n",
+					"url = \"https://dog.ceo/api/breeds/list/all\"\n",
+					"\n",
+					"df = (\n",
+					"    spark.read\n",
+					"    .option(\"multiline\", \"true\")\n",
+					"    .json(url)\n",
+					")\n",
+					"\n",
+					"df.show(truncate=False)\n",
+					""
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import requests\n",
+					"\n",
+					"url = \"https://dog.ceo/api/breeds/list/all\"\n",
+					"resp = requests.get(url, timeout=30)\n",
+					"resp.raise_for_status()\n",
+					"\n",
+					"data = resp.json()\n",
+					"print(data[\"status\"])\n",
+					"print(len(data[\"message\"]))  # aantal breeds\n",
+					""
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import json\n",
+					"from pyspark.sql import Row\n",
+					"\n",
+					"rows = [Row(json=json.dumps(data))]\n",
+					"df = spark.createDataFrame(rows)\n",
+					"df.show(truncate=False)\n",
+					""
+				],
+				"execution_count": 4
+			},
 			{
 				"cell_type": "code",
 				"source": [
@@ -60,7 +146,7 @@
 					"\n",
 					""
 				],
-				"execution_count": null
+				"execution_count": 1
 			}
 		]
 	}
