@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "aba66757-4df7-4988-85cb-ad78b38ef2c1"
+				"spark.autotune.trackingId": "441c95d1-39f4-429e-a79f-300617487d84"
 			}
 		},
 		"metadata": {
@@ -58,9 +58,371 @@
 			{
 				"cell_type": "code",
 				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"path = \"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/DataToCleanse.txt\"\n",
+					"df = spark.read.option(\"multiline\", \"true\").json(path)\n",
+					"# df.printSchema()\n",
+					"# df.show(truncate=False)\n",
+					"# df.format(json)\n",
+					"\n",
+					"# df.toJSON()\n",
+					"# display(df)\n",
+					"\n",
+					"\n",
+					"import json\n",
+					"# row_json = df.toJSON().first()\n",
+					"# print(json.dumps(json.loads(row_json), indent=2))\n",
+					"\n",
+					"\n",
+					"row_dict = json.loads(df.toJSON().first())\n",
+					"print(row_dict[\"data_v3\"][\"entries\"][0][\"tags\"][0][1])\n",
+					"\n",
+					"iets = row_dict[\"data_v3\"][\"entries\"][0][\"tags\"]\n",
+					"\n",
+					"\n",
+					""
+				],
+				"execution_count": 98
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"df = spark.read.json(path)\n",
+					"df.printSchema()\n",
+					"# df.show(truncate=False)\n",
+					"\n",
+					"# df.show()\n",
+					"# df.select(\"data_v3\").show()\n",
+					"# status = df.select(\"entries\")\n",
+					"# print(status)\n",
+					"\n",
+					"df.select(\"entries\").show(truncate=False)\n",
+					""
+				],
+				"execution_count": 58
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"path = \"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/DataToCleanse.txt\"\n",
+					"\n",
+					"df = spark.read.text(path)\n",
+					"\n",
+					"df.show(truncate=False)\n",
+					""
+				],
+				"execution_count": 33
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df = spark.read.json(\"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/dog_api/ingest_date=2026-02-17\")\n",
+					"df.show(truncate=False)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"testdata = \"{\n",
+					"  \"status\": \"success\",\n",
+					"  \"data_v3\": {\n",
+					"    \"metadata\": { \"batch_id\": \"99x-A\", \"nodes\": [1, 2, 3] },\n",
+					"    \"entries\": [\n",
+					"      {\n",
+					"        \"id\": 101,\n",
+					"        \"raw_attributes\": \"{\\\"color\\\": \\\"red\\\", \\\"weight\\\": \\\"15kg\\\"}\",\n",
+					"        \"tags\": [[\"urgent\", \"high-priority\"], \"automated\"],\n",
+					"        \"history\": {\n",
+					"          \"updates\": [\n",
+					"            { \"timestamp\": 1700000000, \"by\": \"system_bot_01\" }\n",
+					"          ]\n",
+					"        }\n",
+					"      },\n",
+					"      {\n",
+					"        \"id\": 102,\n",
+					"        \"raw_attributes\": null,\n",
+					"        \"tags\": [],\n",
+					"        \"history\": {\n",
+					"          \"updates\": []\n",
+					"        }\n",
+					"      }\n",
+					"    ],\n",
+					"    \"nested_errors\": {\n",
+					"      \"level_1\": {\n",
+					"        \"level_2\": {\n",
+					"          \"message\": \"Warning: Deeply nested key here\",\n",
+					"          \"code\": 404\n",
+					"        }\n",
+					"      }\n",
+					"    }\n",
+					"  }\n",
+					"}\n",
+					"\""
+				],
+				"execution_count": 32
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"outputs_hidden": true
+					}
+				},
+				"source": [
+					"df.printSchema()"
+				],
+				"execution_count": 31
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df = spark.read.json(\"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/dog_api/ingest_date=2026-02-17\")\n",
+					"df.show(truncate=False)"
+				],
+				"execution_count": 30
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import requests\n",
+					"from datetime import date\n",
+					"\n",
+					"url = \"https://dog.ceo/api/breeds/list/all\"\n",
+					"json_text = requests.get(url, timeout=30).text\n",
+					"\n",
+					"today = date.today().isoformat()\n",
+					"raw_dir = f\"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/dog_api/ingest_date={today}/\"\n",
+					"\n",
+					"# 1 bestand (part-file) met jouw JSON payload\n",
+					"spark.sparkContext.parallelize([json_text]).saveAsTextFile(raw_dir)\n",
+					""
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df = spark.read.json(raw_dir)\n",
+					"df.show(truncate=False)\n",
+					""
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from pyspark.sql import functions as F\n",
+					"\n",
+					"# df = jouw ingelezen raw json\n",
+					"fields = df.schema[\"message\"].dataType.names\n",
+					"\n",
+					"entries = F.array(*[\n",
+					"    F.struct(\n",
+					"        F.lit(f).alias(\"breed\"),\n",
+					"        F.col(f\"message.`{f}`\").alias(\"subbreeds\")\n",
+					"    )\n",
+					"    for f in fields\n",
+					"])\n",
+					"\n",
+					"breeds_df = (\n",
+					"    df.select(F.explode(entries).alias(\"e\"))\n",
+					"      .select(\"e.breed\", \"e.subbreeds\")\n",
+					")\n",
+					"\n",
+					"# optioneel: 1 rij per subbreed\n",
+					"flat_df = (\n",
+					"    breeds_df\n",
+					"    .withColumn(\"subbreed\", F.explode_outer(\"subbreeds\"))\n",
+					"    .drop(\"subbreeds\")\n",
+					")\n",
+					"\n",
+					"flat_df.show(20, truncate=False)\n",
+					""
+				],
+				"execution_count": 20
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"silver_path = \"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Silver/dog_api/breeds_flat_delta/\"\n",
+					"\n",
+					"flat_df.write.mode(\"overwrite\").format(\"delta\").save(silver_path)\n",
+					""
+				],
+				"execution_count": 21
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"spark.sql(\"CREATE DATABASE IF NOT EXISTS sandbox\")\n",
+					"\n",
+					"spark.sql(f\"\"\"\n",
+					"CREATE TABLE IF NOT EXISTS sandbox.dog_breeds\n",
+					"USING DELTA\n",
+					"LOCATION '{silver_path}'\n",
+					"\"\"\")\n",
+					""
+				],
+				"execution_count": 22
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"spark.sql(\"select * from sandbox.dog_breeds\")"
+				],
+				"execution_count": 25
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from pyspark.sql.types import StructType, StructField, StringType, MapType, ArrayType\n",
+					"from pyspark.sql import functions as F\n",
+					"\n",
+					"schema = StructType([\n",
+					"    StructField(\"message\", MapType(StringType(), ArrayType(StringType())), True),\n",
+					"    StructField(\"status\", StringType(), True),\n",
+					"])\n",
+					"\n",
+					"df2 = spark.read.schema(schema).json(raw_dir)\n",
+					"\n",
+					"breeds_df = (\n",
+					"    df2.select(F.explode(F.map_entries(\"message\")).alias(\"kv\"))\n",
+					"       .select(F.col(\"kv.key\").alias(\"breed\"),\n",
+					"               F.col(\"kv.value\").alias(\"subbreeds\"))\n",
+					")\n",
+					"\n",
+					"breeds_df.show(30, truncate=False)\n",
+					""
+				],
+				"execution_count": 19
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from pyspark.sql import functions as F\n",
+					"\n",
+					"breeds_df = (\n",
+					"    df\n",
+					"    .select(F.explode(F.map_entries(\"message\")).alias(\"kv\"))\n",
+					"    .select(\n",
+					"        F.col(\"kv.key\").alias(\"breed\"),\n",
+					"        F.col(\"kv.value\").alias(\"subbreeds\")\n",
+					"    )\n",
+					")\n",
+					"\n",
+					"breeds_df.show(30, truncate=False)\n",
+					""
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import requests\n",
+					"from datetime import date\n",
+					"\n",
+					"url = \"https://dog.ceo/api/breeds/list/all\"\n",
+					"json_obj = requests.get(url, timeout=30).json()\n",
+					"\n",
+					"today = date.today().isoformat()\n",
+					"raw_dir = f\"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/dog_api/ingest_date={today}/\"\n",
+					"\n",
+					"spark.createDataFrame([json_obj]).write.mode(\"overwrite\").json(raw_dir)\n",
+					""
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# raw_dir = \"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/dog_api/ingest_date=2026-02-17/\"\n",
+					"\n",
+					"raw_folder = \"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/dog_api/\"\n",
+					"file_name = \"breeds.json\"\n",
+					"\n",
+					"# raw_text_df = spark.read.text(raw_dir)\n",
+					"raw_text_df = spark.read.text(f\"{raw_folder}/{file_name}\")\n",
+					"raw_text_df.show(truncate=False)\n",
+					"\n",
+					"\n",
+					""
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"import requests\n",
+					"from pyspark.sql import functions as F\n",
+					"\n",
+					"url = \"https://dog.ceo/api/breeds/list/all\"\n",
+					"resp = requests.get(url, timeout=30)\n",
+					"resp.raise_for_status()\n",
+					"\n",
+					"raw_folder = \"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/dog_api/\"\n",
+					"file_name = \"breeds.json\"\n",
+					"\n",
+					"full_path = raw_folder + file_name\n",
+					"\n",
+					"\n",
+					"# schrijf 1 JSON string als bestand\n",
+					"spark.sparkContext.parallelize([json_text]).saveAsTextFile(full_path)\n",
+					"\n",
+					"json_text = resp.text  # string met JSON\n",
+					"\n",
+					"df = spark.read.json(full_path)\n",
+					"df.show(truncate=False)\n",
+					""
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"source": [
 					"help(requests.api)"
 				],
-				"execution_count": 8
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
