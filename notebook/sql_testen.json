@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "e308b0a5-7b06-4188-ab91-e636f1d6ee75"
+				"spark.autotune.trackingId": "4ee1e3c2-d42d-4f40-a93d-a9e54a536ee1"
 			}
 		},
 		"metadata": {
@@ -50,14 +50,49 @@
 		"cells": [
 			{
 				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
 				"source": [
-					"path = \"adbfs://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/Hospital_data/procedures.csv\"\n",
+					"path = \"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/Hospital_data/procedures.csv\"\n",
 					"\n",
-					"df = spark.read.csv(path)\n",
+					"df = (spark.read\n",
+					"    .option(\"header\", \"true\")\n",
+					"    .option(\"inferSchema\", \"true\")\n",
+					"    .csv(path)\n",
+					"    )\n",
+					"\n",
 					"display(df)\n",
+					"\n",
+					"\n",
+					"# df = spark.read.csv(path)\n",
+					"# display(df)\n",
 					""
 				],
-				"execution_count": 1
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"(df.write\n",
+					"    .mode(\"overwrite\")\n",
+					"    .format(\"delta\")\n",
+					"    .saveAsTable(\"sandbox.hospital_data_procedures\"))"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"table = spark.sql(\"select * from sandbox.hospital_data_procedures\")\n",
+					"display(table)\n",
+					"\n",
+					""
+				],
+				"execution_count": 11
 			}
 		]
 	}
