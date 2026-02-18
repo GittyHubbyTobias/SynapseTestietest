@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "6e16bb6c-8555-436a-9cd5-6cc25e834535"
+				"spark.autotune.trackingId": "ece20ab2-3bbe-4d81-a7f1-6aecbc716bb3"
 			}
 		},
 		"metadata": {
@@ -50,13 +50,119 @@
 		"cells": [
 			{
 				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"from pyspark.sql import functions as F\n",
+					"\n",
+					"path = \"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/oeps_echt_json_glossory.json\"\n",
+					"raw = spark.read.text(path)\n",
+					"\n",
+					"\n",
+					"json_text_df = raw.select(\n",
+					"    F.concat_ws(\"\\n\", F.collect_list(\"value\")).alias(\"json_text\")\n",
+					")\n",
+					"\n",
+					"display(json_text_df)  # dit is 1 rij met de complete JSON als tekst\n",
+					"\n",
+					"\n",
+					"\n",
+					"\n",
+					"json_str = json_text_df.first()[\"json_text\"]\n",
+					"\n",
+					"df_json = spark.read.json(spark.sparkContext.parallelize([json_str]))\n",
+					"display(df_json)\n",
+					"df_json.printSchema()\n",
+					"\n",
+					"# df_json.toJSON().show(truncate=False)\n",
+					"\n",
+					"\n",
+					"\n",
+					""
+				],
+				"execution_count": 20
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"\n",
+					"(df_json\n",
+					" .write\n",
+					" .mode(\"overwrite\")\n",
+					" .format(\"delta\")\n",
+					" .saveAsTable(\"sandbox.silver_glossary_json\"))\n",
+					""
+				],
+				"execution_count": 21
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"spark.sql(\"SELECT * FROM sandbox.silver_glossary_json\").show\n",
+					""
+				],
+				"execution_count": 28
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df = spark.sql(\"SELECT * FROM `sandbox`.`silver_glossary_json`\")\n",
+					"# df.show(10)"
+				],
+				"execution_count": 29
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"path = \"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/oeps_echt_json_glossory.json\"\n",
+					"\n",
+					"df = spark.read.text(path)\n",
+					"display(df)\n",
+					""
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"path = \"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/oeps_echt_json_glossory.json\"\n",
+					"\n",
+					"df_json = spark.read.json(path)\n",
+					"\n",
+					"display(df_json)\n",
+					""
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
 				"source": [
 					"path = \"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/glossary.json\"\n",
-					"# df = spark.read.option(\"multiline\", \"true\").json(path)\n",
 					"\n",
-					"path.collect()"
+					"df_json = spark.read.json(path)\n",
+					"\n",
+					"display(df_json)\n",
+					"\n",
+					""
 				],
-				"execution_count": 1
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
