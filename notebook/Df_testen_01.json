@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "ece20ab2-3bbe-4d81-a7f1-6aecbc716bb3"
+				"spark.autotune.trackingId": "73f4a002-c19a-45de-845c-a99fa87cc608"
 			}
 		},
 		"metadata": {
@@ -48,6 +48,13 @@
 			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
 			{
 				"cell_type": "code",
 				"metadata": {
@@ -109,11 +116,71 @@
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
 				"source": [
 					"df = spark.sql(\"SELECT * FROM `sandbox`.`silver_glossary_json`\")\n",
-					"# df.show(10)"
+					"df.show(10)\n",
+					"\n",
+					"display(df)"
 				],
-				"execution_count": 29
+				"execution_count": 32
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"out_path = \"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Silver/glossary_json_delta/\"\n",
+					"\n",
+					"(df_json\n",
+					" .write\n",
+					" .mode(\"overwrite\")\n",
+					" .format(\"delta\")\n",
+					" .save(out_path))\n",
+					""
+				],
+				"execution_count": 33
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"df2 = spark.read.format(\"delta\").load(out_path)\n",
+					"display(df2)"
+				],
+				"execution_count": 36
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from pyspark.sql import functions as F\n",
+					"\n",
+					"gold = df_json.select(\n",
+					"    F.col(\"glossary.title\").alias(\"glossary_title\"),\n",
+					"    F.col(\"glossary.GlossDiv.title\").alias(\"div_title\"),\n",
+					"    F.col(\"glossary.GlossDiv.GlossList.GlossEntry.ID\").alias(\"id\"),\n",
+					"    F.col(\"glossary.GlossDiv.GlossList.GlossEntry.GlossTerm\").alias(\"term\"),\n",
+					"    F.col(\"glossary.GlossDiv.GlossList.GlossEntry.GlossDef.para\").alias(\"definition\"),\n",
+					"    F.col(\"glossary.GlossDiv.GlossList.GlossEntry.GlossDef.GlossSeeAlso\").alias(\"see_also\")\n",
+					")\n",
+					"\n",
+					"gold.write.mode(\"overwrite\").format(\"delta\").saveAsTable(\"sandbox.gold_glossary\")\n",
+					""
+				],
+				"execution_count": 37
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"tabel = spark.sql(\"select * from sandbox.gold_glossary\")\n",
+					"display(tabel)"
+				],
+				"execution_count": 42
 			},
 			{
 				"cell_type": "code",
