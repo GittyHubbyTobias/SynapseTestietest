@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4ee1e3c2-d42d-4f40-a93d-a9e54a536ee1"
+				"spark.autotune.trackingId": "4eb57b52-7fbb-470a-882d-30adc077191e"
 			}
 		},
 		"metadata": {
@@ -63,10 +63,6 @@
 					"    )\n",
 					"\n",
 					"display(df)\n",
-					"\n",
-					"\n",
-					"# df = spark.read.csv(path)\n",
-					"# display(df)\n",
 					""
 				],
 				"execution_count": 6
@@ -93,6 +89,120 @@
 					""
 				],
 				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"path = \"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/Hospital_data/patients.csv\"\n",
+					"\n",
+					"df = (spark.read\n",
+					"    .option(\"header\",\"True\")\n",
+					"    .option(\"inferSchema\",\"True\")\n",
+					"    .csv(path)\n",
+					"    )\n",
+					"\n",
+					"display(df)"
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"(df.write\n",
+					"    .mode(\"overwrite\")\n",
+					"    .format(\"delta\")\n",
+					"    .saveAsTable(\"sandbox.hospital_patients\"))\n",
+					"\n",
+					"display(df)"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"spark.sql(\"describe extended sandbox.hospital_data_procedures\")"
+				],
+				"execution_count": 24
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"spark.sql(\"\"\"\n",
+					"select patient.id, patient.first as patient_first_name, patient.last as patient_last_name, patient.race, patient.state, procedures.patient as procedures_patient_id, procedures.description, procedures.base_cost\n",
+					"from sandbox.hospital_patients as patient\n",
+					"left join sandbox.hospital_data_procedures as procedures\n",
+					"on patients.id = procedures.patient;\n",
+					"\"\"\"\n",
+					")"
+				],
+				"execution_count": 26
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"spark.sql(\"\"\"Create table sandbox.patiens_and_procedures as\n",
+					"SELECT\n",
+					"  patient.Id                         AS patient_id,\n",
+					"  patient.First                      AS patient_first_name,\n",
+					"  patient.Last                       AS patient_last_name,\n",
+					"  patient.Race                       AS patient_race,\n",
+					"  patient.State                      AS patient_state,\n",
+					"  procedures.PATIENT                 AS procedures_patient_id,\n",
+					"  procedures.DESCRIPTION             AS procedure_description,\n",
+					"  procedures.BASE_COST               AS procedure_base_cost\n",
+					"FROM sandbox.hospital_patients AS patient\n",
+					"LEFT JOIN sandbox.hospital_data_procedures AS procedures\n",
+					"  ON patient.Id = procedures.PATIENT\n",
+					"\"\"\").show(truncate=False)\n",
+					""
+				],
+				"execution_count": 28
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"tabel = spark.sql(\"select * from sandbox.patiens_and_procedures limit 100\")\n",
+					"display(tabel)"
+				],
+				"execution_count": 33
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"tabel = spark.sql(\"select * from sandbox.patiens_and_procedures groupby patient_race\")\n",
+					"display(tabel)"
+				],
+				"execution_count": 35
 			}
 		]
 	}
