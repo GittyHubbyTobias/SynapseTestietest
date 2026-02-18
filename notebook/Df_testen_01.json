@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "d23f047e-28e3-4abe-9f52-25a674d7aa82"
+				"spark.autotune.trackingId": "c4154b36-ca86-48a3-9a38-59a735a24dc4"
 			}
 		},
 		"metadata": {
@@ -48,6 +48,16 @@
 			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"path = \"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/glossary.json\"\n",
+					"# df = spark.read.option(\"multiline\", \"true\").json(path)\n",
+					"\n",
+					"path.collect()"
+				],
+				"execution_count": null
+			},
 			{
 				"cell_type": "code",
 				"source": [
