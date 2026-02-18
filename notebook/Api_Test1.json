@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "441c95d1-39f4-429e-a79f-300617487d84"
+				"spark.autotune.trackingId": "80b656da-edd6-438a-9e39-e30738ee24b2"
 			}
 		},
 		"metadata": {
@@ -84,14 +84,21 @@
 					"\n",
 					"\n",
 					"row_dict = json.loads(df.toJSON().first())\n",
-					"print(row_dict[\"data_v3\"][\"entries\"][0][\"tags\"][0][1])\n",
+					"print(row_dict[\"data_v3\"][\"entries\"][0][\"tags\"][0])\n",
 					"\n",
 					"iets = row_dict[\"data_v3\"][\"entries\"][0][\"tags\"]\n",
 					"\n",
 					"\n",
 					""
 				],
-				"execution_count": 98
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df.select(\"data_v3.metadata.batch_id\").show()"
+				],
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
@@ -111,7 +118,7 @@
 					"df.select(\"entries\").show(truncate=False)\n",
 					""
 				],
-				"execution_count": 58
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -123,7 +130,7 @@
 					"df.show(truncate=False)\n",
 					""
 				],
-				"execution_count": 33
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -131,7 +138,7 @@
 					"df = spark.read.json(\"abfss://storagesynapsetestietest@accountsynapsetestietest.dfs.core.windows.net/Raw/dog_api/ingest_date=2026-02-17\")\n",
 					"df.show(truncate=False)"
 				],
-				"execution_count": null
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
