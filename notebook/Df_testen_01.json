@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "73f4a002-c19a-45de-845c-a99fa87cc608"
+				"spark.autotune.trackingId": "af83eee1-3552-44bf-b0e0-0d0f84d0d3b7"
 			}
 		},
 		"metadata": {
@@ -50,10 +50,14 @@
 		"cells": [
 			{
 				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
 				"source": [
-					""
+					"df = spark.sql(\"select * from sandbox.gold_glossary\")\n",
+					"display(df)"
 				],
-				"execution_count": null
+				"execution_count": 45
 			},
 			{
 				"cell_type": "code",
